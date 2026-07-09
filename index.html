@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nexus — Platform Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { background:#03101f; width:100%; height:100%; overflow:hidden; }
+  body { position:relative; font-family:'Montserrat', 'Segoe UI', Arial, sans-serif; margin:0; }
+
+  @keyframes nx-spin { to { transform:rotate(360deg); } }
+  @keyframes nx-pulse { 0%,100% { opacity:.45; transform:scale(1); } 50% { opacity:.85; transform:scale(1.06); } }
+
+  .nx-slide {
+    position:relative; width:1920px; height:1080px; box-sizing:border-box; overflow:hidden;
+    font-family:'Montserrat', 'Segoe UI', Arial, sans-serif;
+    background:
+      linear-gradient(180deg, rgba(3,16,31,.18), rgba(3,16,31,.36)),
+      url('images/background.jpg') center center / cover no-repeat,
+      #03101f;
+    margin:0; flex-shrink:0; transform-origin:top left;
+  }
+
+  /* top banner */
+  .nx-banner { position:absolute; left:0; top:0; width:100%; box-sizing:border-box; padding:38px 76px 24px; display:flex; align-items:center; justify-content:space-between; gap:46px; border-bottom:1px solid rgba(157,196,236,.14); background:linear-gradient(180deg, rgba(3,16,31,.58), rgba(3,16,31,.16) 78%, rgba(3,16,31,0)); backdrop-filter:blur(1px); }
+  .nx-logo-lockup { display:flex; align-items:center; justify-content:flex-start; min-height:96px; width:150px; flex:0 0 150px; }
+  .nx-logo-mark { width:126px; height:auto; display:block; filter:drop-shadow(0 0 18px rgba(245,130,32,.38)); }
+  .nx-banner-title { max-width:720px; padding-top:4px; }
+  .nx-banner-desc { padding-top:8px; }
+  .nx-eyebrow { font-family:'Montserrat', 'Segoe UI', Arial, sans-serif; font-size:12px; font-weight:800; letter-spacing:5.5px; color:#f58220; margin-bottom:12px; }
+  .nx-headline { font-family:'Montserrat', 'Segoe UI', Arial, sans-serif; font-weight:700; font-size:40px; letter-spacing:-.35px; line-height:1.08; color:#f3f7fc; }
+  .nx-headline span { color:#9dc4ec; }
+  .nx-rule { width:56px; height:3px; background:#f58220; margin-top:18px; border-radius:4px; box-shadow:0 0 18px rgba(245,130,32,.35); }
+  .nx-body { font-size:16px; font-weight:400; line-height:1.58; color:#c9d7e6; margin-bottom:10px; }
+  .nx-note { font-size:13px; font-weight:600; letter-spacing:.2px; line-height:1.5; color:#90a9c8; }
+
+  /* diagram stage */
+  .nx-stage { position:absolute; left:50%; top:268px; width:920px; height:780px; transform:translateX(-50%); }
+  .nx-stage svg { position:absolute; inset:0; width:100%; height:100%; overflow:visible; transition:opacity .4s ease; }
+  .nx-stage svg.nx-lines { z-index:1; }
+  .nx-stage svg.nx-ring { z-index:2; }
+  .nx-glow { position:absolute; left:285px; top:225px; width:350px; height:350px; border-radius:50%; z-index:3;
+    background:radial-gradient(circle at 50% 40%, rgba(235,122,43,.16), rgba(235,122,43,0) 65%);
+    animation:nx-pulse 6s ease-in-out infinite; transition:opacity .4s ease; }
+  .nx-core { position:absolute; left:345px; top:285px; width:230px; height:230px; border-radius:50%; z-index:4;
+    background:radial-gradient(circle at 50% 35%, #16406f, #0a2748 70%); border:1.5px solid rgba(235,122,43,.55);
+    box-shadow:0 0 50px rgba(235,122,43,.28), inset 0 2px 0 rgba(255,255,255,.10);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; transition:opacity .4s ease; }
+  .nx-core-title { font-family:'Montserrat', 'Segoe UI', Arial, sans-serif; font-weight:800; font-size:35px; letter-spacing:10px; color:#f59a4b; text-indent:10px; }
+  .nx-core-sub { font-family:'Montserrat', 'Segoe UI', Arial, sans-serif; font-size:10px; font-weight:800; letter-spacing:3.2px; color:#9dc4ec; }
+  .nx-core-rule { width:42px; height:2px; background:#eb7a2b; margin:4px 0; }
+  .nx-core-desc { font-size:11px; color:#b9c8da; max-width:160px; text-align:center; line-height:1.4; }
+
+  /* bubbles */
+  .nx-bubble { position:absolute; width:160px; height:160px; z-index:5; border-radius:50%;
+    background:radial-gradient(circle at 50% 35%, #15396a, #081d38); border:1px solid rgba(235,122,43,.42);
+    box-shadow:0 18px 40px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:7px;
+    padding:0 18px; cursor:pointer; color:inherit; font:inherit;
+    transition:transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease, border-color .28s ease, opacity .4s ease, filter .4s ease; }
+  .nx-bubble:hover { transform:scale(1.06); border-color:rgba(235,122,43,.8); box-shadow:0 18px 44px rgba(0,0,0,.5), 0 0 34px rgba(235,122,43,.22), inset 0 1px 0 rgba(255,255,255,.1); }
+  .nx-bubble:focus-visible { outline:2px solid #f59a4b; outline-offset:4px; }
+  .nx-bubble i { font-size:30px; color:#f59a4b; pointer-events:none; }
+  .nx-bubble .nx-b-title { font-family:'Montserrat', 'Segoe UI', Arial, sans-serif; font-weight:800; font-size:16px; letter-spacing:.15px; color:#eef3f9; pointer-events:none; }
+  .nx-bubble .nx-b-desc { font-size:10.5px; font-weight:500; line-height:1.35; color:#a9bfd7; max-width:122px; pointer-events:none; }
+
+  .nx-stage.nx-open .nx-bubble:not(.nx-source):not(:hover) { opacity:.25; filter:saturate(.5); }
+  .nx-stage.nx-open .nx-bubble.nx-source { opacity:0; pointer-events:none; }
+  .nx-stage.nx-open svg.nx-lines,
+  .nx-stage.nx-open svg.nx-ring,
+  .nx-stage.nx-open .nx-glow,
+  .nx-stage.nx-open .nx-core { opacity:.12; }
+
+  /* detail panel */
+  .nx-panel {
+    position:absolute; z-index:10; left:66px; top:64px; width:788px; height:652px;
+    background:linear-gradient(165deg, #123a68 0%, #0b2649 55%, #081b34 100%);
+    border:1px solid rgba(235,122,43,.4); border-radius:22px;
+    box-shadow:0 30px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.03) inset, 0 2px 0 rgba(255,255,255,.06) inset;
+    padding:44px 48px; opacity:0; pointer-events:none;
+    transform:translate(0,0) scale(.06);
+    transition:transform .5s cubic-bezier(.2,.8,.2,1), opacity .3s ease;
+  }
+  .nx-panel.nx-visible { opacity:1; pointer-events:auto; }
+
+  .nx-panel-head { display:flex; align-items:flex-start; gap:20px; }
+  .nx-panel-icon { flex:0 0 auto; width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(circle at 50% 35%, #1c4a82, #0a2748); border:1px solid rgba(235,122,43,.55);
+    box-shadow:0 0 26px rgba(235,122,43,.25); }
+  .nx-panel-icon i { font-size:30px; color:#f59a4b; }
+  .nx-panel-heading { flex:1; }
+  .nx-panel-eyebrow { font-family:'Montserrat', 'Segoe UI', Arial, sans-serif; font-size:10.5px; font-weight:800; letter-spacing:3.5px; color:#f58220; margin-bottom:8px; }
+  .nx-panel-title { font-family:'Montserrat', 'Segoe UI', Arial, sans-serif; font-weight:800; font-size:34px; letter-spacing:-.4px; color:#f3f7fc; line-height:1.1; }
+  .nx-panel-tagline { font-size:15.5px; color:#a9bcd4; margin-top:6px; line-height:1.5; max-width:560px; }
+  .nx-panel-close { flex:0 0 auto; width:38px; height:38px; border-radius:50%; border:1px solid rgba(157,196,236,.3);
+    background:rgba(255,255,255,.04); color:#c2d0e0; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition:background .2s ease, transform .2s ease, border-color .2s ease; }
+  .nx-panel-close:hover { background:rgba(235,122,43,.16); border-color:rgba(235,122,43,.6); transform:rotate(90deg); }
+  .nx-panel-close i { font-size:17px; pointer-events:none; }
+
+  .nx-panel-rule { width:100%; height:1px; background:linear-gradient(90deg, rgba(235,122,43,.55), rgba(235,122,43,0) 70%); margin:26px 0 28px; }
+
+  .nx-panel-body { display:grid; grid-template-columns:1fr 1.05fr; gap:34px; }
+
+  .nx-feature-list { display:flex; flex-direction:column; gap:16px; }
+  .nx-feature { display:flex; gap:12px; align-items:flex-start; }
+  .nx-feature i { font-size:18px; color:#eb7a2b; margin-top:2px; flex:0 0 auto; }
+  .nx-feature span { font-size:14.5px; line-height:1.55; color:#d3dfec; }
+
+  .nx-mock { position:relative; border-radius:16px; border:1px solid rgba(157,196,236,.18);
+    background:linear-gradient(160deg, rgba(10,30,55,.9), rgba(6,20,38,.9)); padding:16px; height:100%;
+    display:flex; flex-direction:column; gap:12px; overflow:hidden; }
+  .nx-mock-label { font-family:'Montserrat', 'Segoe UI', Arial, sans-serif; font-size:9.5px; font-weight:800; letter-spacing:2.2px; color:#86a5c6; text-transform:uppercase; }
+
+  /* phone mock */
+  .nx-phone { flex:1; margin:0 auto; width:190px; border-radius:22px; background:#0c2543; border:1px solid rgba(157,196,236,.25);
+    padding:12px 10px; display:flex; flex-direction:column; gap:8px; box-shadow:0 14px 30px rgba(0,0,0,.4); }
+  .nx-phone-bar { width:36px; height:4px; border-radius:3px; background:rgba(157,196,236,.35); margin:0 auto 4px; }
+  .nx-card-row { background:rgba(157,196,236,.08); border:1px solid rgba(157,196,236,.14); border-radius:10px; padding:9px 10px; display:flex; gap:8px; align-items:center; }
+  .nx-card-row i { font-size:15px; color:#f59a4b; }
+  .nx-card-row .nx-cr-txt { flex:1; }
+  .nx-cr-title { font-size:10.5px; color:#eef3f9; font-weight:600; }
+  .nx-cr-sub { font-size:8.5px; color:#8fa5c0; margin-top:2px; }
+  .nx-pill { font-size:8px; padding:2px 7px; border-radius:20px; background:rgba(235,122,43,.18); color:#f59a4b; border:1px solid rgba(235,122,43,.4); white-space:nowrap; }
+  .nx-pill.done { background:rgba(122,199,150,.16); color:#8fd6a8; border-color:rgba(122,199,150,.4); }
+
+  /* kanban mock */
+  .nx-kanban { flex:1; display:flex; gap:8px; }
+  .nx-kcol { flex:1; background:rgba(157,196,236,.05); border:1px solid rgba(157,196,236,.12); border-radius:10px; padding:8px; display:flex; flex-direction:column; gap:6px; }
+  .nx-kcol-h { font-size:8.5px; letter-spacing:1px; color:#8fa5c0; text-transform:uppercase; margin-bottom:2px; }
+  .nx-kcard { background:rgba(255,255,255,.05); border:1px solid rgba(157,196,236,.14); border-radius:7px; padding:7px 8px; font-size:9px; color:#dbe6f3; line-height:1.35; }
+
+  /* photo grid mock */
+  .nx-photogrid { flex:1; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .nx-photo { position:relative; border-radius:10px; overflow:hidden; border:1px solid rgba(157,196,236,.16);
+    background:linear-gradient(135deg,#1a4a80,#0c2745); display:flex; align-items:flex-end; padding:6px; }
+  .nx-photo i { position:absolute; top:6px; left:6px; font-size:14px; color:rgba(255,255,255,.55); }
+  .nx-photo .nx-pill { position:relative; }
+
+  /* dashboard mock */
+  .nx-dash-kpis { display:flex; gap:8px; }
+  .nx-kpi { flex:1; background:rgba(157,196,236,.06); border:1px solid rgba(157,196,236,.14); border-radius:10px; padding:9px 10px; }
+  .nx-kpi-val { font-family:'Montserrat', 'Segoe UI', Arial, sans-serif; font-weight:700; font-size:16px; color:#f3f7fc; }
+  .nx-kpi-lbl { font-size:8px; letter-spacing:.5px; color:#8fa5c0; text-transform:uppercase; margin-top:2px; }
+  .nx-bars { flex:1; display:flex; align-items:flex-end; gap:7px; padding:10px 6px 0; background:rgba(157,196,236,.05); border:1px solid rgba(157,196,236,.12); border-radius:10px; }
+  .nx-bar { flex:1; border-radius:4px 4px 0 0; background:linear-gradient(180deg,#f59a4b,#eb7a2b); position:relative; }
+
+  /* map mock */
+  .nx-map { flex:1; position:relative; border-radius:10px; overflow:hidden; border:1px solid rgba(157,196,236,.16);
+    background:
+      linear-gradient(0deg, rgba(157,196,236,.07) 1px, transparent 1px) 0 0/100% 22px,
+      linear-gradient(90deg, rgba(157,196,236,.07) 1px, transparent 1px) 0 0/22px 100%,
+      linear-gradient(160deg,#123252,#0a1f38); }
+  .nx-pin { position:absolute; width:14px; height:14px; border-radius:50% 50% 50% 0; background:#f59a4b; transform:rotate(-45deg);
+    box-shadow:0 0 0 4px rgba(235,122,43,.18); }
+
+  /* ticket table mock */
+  .nx-table { flex:1; display:flex; flex-direction:column; gap:6px; }
+  .nx-trow { display:flex; align-items:center; gap:8px; background:rgba(157,196,236,.05); border:1px solid rgba(157,196,236,.12); border-radius:8px; padding:7px 9px; }
+  .nx-trow .nx-cr-txt { flex:1; }
+
+  .nx-footnote { position:absolute; left:50%; transform:translateX(-50%); bottom:30px; font-family:'Montserrat', 'Segoe UI', Arial, sans-serif; font-size:10.5px; font-weight:800; letter-spacing:2px; color:#617b9b; }
+
+  /* full-page module image overlay */
+  .nx-fullpage {
+    position:absolute; inset:0; z-index:20;
+    display:flex; align-items:center; justify-content:center;
+    background:#03101f;
+    opacity:0; pointer-events:none; transform:scale(.96);
+    transition:opacity .32s ease, transform .38s cubic-bezier(.2,.8,.2,1);
+  }
+  .nx-fullpage.nx-fp-visible { opacity:1; pointer-events:auto; transform:scale(1); }
+  .nx-fullpage img { width:100%; height:100%; object-fit:contain; display:block; }
+  .nx-fp-close {
+    position:absolute; top:28px; right:34px; z-index:30;
+    width:44px; height:44px; border-radius:50%;
+    border:1.5px solid rgba(157,196,236,.45); background:rgba(3,16,31,.85);
+    color:#eef3f9; display:flex; align-items:center; justify-content:center;
+    font-size:20px; line-height:1; font-family:Arial, sans-serif;
+    cursor:pointer; transition:background .2s ease, border-color .2s ease, transform .2s ease;
+  }
+  .nx-fp-close:hover { background:rgba(235,122,43,.28); border-color:rgba(235,122,43,.8); transform:rotate(90deg); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition:none !important; animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<section class="nx-slide" data-screen-label="Nexus">
+
+  <div class="nx-banner">
+    <div class="nx-logo-lockup" aria-label="Meridian Group">
+      <img class="nx-logo-mark" src="images/logo.png" alt="Meridian Group logo">
+    </div>
+    <div class="nx-banner-title">
+      <div class="nx-eyebrow">OUR PLATFORM</div>
+      <div class="nx-headline">Everything Your Brand Needs. <span>One Partner.</span></div>
+      <div class="nx-rule"></div>
+    </div>
+    <div class="nx-banner-desc">
+      <div class="nx-body">A unified, transparent digital backbone that connects people, data &amp; execution — turning field activity into real time insight &amp; measurable sales growth.</div>
+      <div class="nx-note">Built for principals managing high SKU complexity at scale.</div>
+    </div>
+  </div>
+
+  <div class="nx-stage" id="stage">
+
+    <svg class="nx-lines" viewBox="0 0 920 780">
+      <defs>
+        <linearGradient id="spokeS" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#eb7a2b" stop-opacity=".75"></stop>
+          <stop offset="1" stop-color="#3e8fd8" stop-opacity=".4"></stop>
+        </linearGradient>
+        <radialGradient id="coreGlowS" cx="50%" cy="50%" r="50%">
+          <stop offset="0" stop-color="#eb7a2b" stop-opacity=".20"></stop>
+          <stop offset="1" stop-color="#eb7a2b" stop-opacity="0"></stop>
+        </radialGradient>
+      </defs>
+      <circle cx="460" cy="400" r="300" fill="url(#coreGlowS)"></circle>
+      <circle cx="460" cy="400" r="300" fill="none" stroke="rgba(140,180,225,.16)" stroke-width="1"></circle>
+      <circle cx="460" cy="400" r="150" fill="none" stroke="rgba(140,180,225,.09)" stroke-width="1"></circle>
+      <line x1="460" y1="400" x2="460" y2="100" stroke="url(#spokeS)" stroke-width="1.6" opacity=".6"></line>
+      <line x1="460" y1="400" x2="694.5" y2="213" stroke="url(#spokeS)" stroke-width="1.6" opacity=".6"></line>
+      <line x1="460" y1="400" x2="752.5" y2="466.8" stroke="url(#spokeS)" stroke-width="1.6" opacity=".6"></line>
+      <line x1="460" y1="400" x2="590.2" y2="670.3" stroke="url(#spokeS)" stroke-width="1.6" opacity=".6"></line>
+      <line x1="460" y1="400" x2="329.8" y2="670.3" stroke="url(#spokeS)" stroke-width="1.6" opacity=".6"></line>
+      <line x1="460" y1="400" x2="167.5" y2="466.8" stroke="url(#spokeS)" stroke-width="1.6" opacity=".6"></line>
+      <line x1="460" y1="400" x2="225.5" y2="213" stroke="url(#spokeS)" stroke-width="1.6" opacity=".6"></line>
+    </svg>
+
+    <svg class="nx-ring" viewBox="0 0 920 780">
+      <circle cx="460" cy="400" r="300" fill="none" stroke="rgba(235,122,43,.45)" stroke-width="1.6" stroke-dasharray="2 13" stroke-linecap="round" style="transform-origin:460px 400px; animation:nx-spin 100s linear infinite;"></circle>
+    </svg>
+
+    <div class="nx-glow"></div>
+    <div class="nx-core">
+      <div class="nx-core-title">NEXUS</div>
+      <div class="nx-core-sub">TECHNOLOGY PLATFORM</div>
+      <div class="nx-core-rule"></div>
+      <div class="nx-core-desc">One unified digital backbone</div>
+    </div>
+
+    <button class="nx-bubble" type="button" data-key="connect" data-cx="460" data-cy="100" style="left:380px; top:20px;">
+      <i class="ph ph-broadcast"></i>
+      <div class="nx-b-title">Connect</div>
+      <div class="nx-b-desc">Mobile driven comms &amp; real time updates</div>
+    </button>
+
+    <button class="nx-bubble" type="button" data-key="activate" data-cx="694.5" data-cy="213" style="left:614.5px; top:133px;">
+      <i class="ph ph-lightning"></i>
+      <div class="nx-b-title">Activate</div>
+      <div class="nx-b-desc">Trade activation &amp; campaign execution</div>
+    </button>
+
+    <button class="nx-bubble" type="button" data-key="capture" data-cx="752.5" data-cy="466.8" style="left:672.5px; top:386.8px;">
+      <i class="ph ph-camera"></i>
+      <div class="nx-b-title">Capture</div>
+      <div class="nx-b-desc">Photo validation &amp; compliance tracking</div>
+    </button>
+
+    <button class="nx-bubble" type="button" data-key="insights" data-cx="590.2" data-cy="670.3" style="left:510.2px; top:590.3px;">
+      <i class="ph ph-chart-line-up"></i>
+      <div class="nx-b-title">Insights</div>
+      <div class="nx-b-desc">Live dashboards, reporting &amp; analytics</div>
+    </button>
+
+    <button class="nx-bubble" type="button" data-key="geo" data-cx="329.8" data-cy="670.3" style="left:249.8px; top:590.3px;">
+      <i class="ph ph-map-pin"></i>
+      <div class="nx-b-title">Geo</div>
+      <div class="nx-b-desc">Geo verified store coverage &amp; visits</div>
+    </button>
+
+    <button class="nx-bubble" type="button" data-key="learn" data-cx="167.5" data-cy="466.8" style="left:87.5px; top:386.8px;">
+      <i class="ph ph-graduation-cap"></i>
+      <div class="nx-b-title">Learn</div>
+      <div class="nx-b-desc">Mobile first training, journeys &amp; quizzes</div>
+    </button>
+
+    <button class="nx-bubble" type="button" data-key="stockfix" data-cx="225.5" data-cy="213" style="left:145.5px; top:133px;">
+      <i class="ph ph-package"></i>
+      <div class="nx-b-title">StockFix</div>
+      <div class="nx-b-desc">Identifies, logs &amp; closes stock gaps</div>
+    </button>
+
+    <div class="nx-panel" id="panel">
+      <!-- populated by JS -->
+    </div>
+
+  </div>
+
+  <div class="nx-footnote">CLICK A NODE TO EXPLORE</div>
+
+  <div class="nx-fullpage" id="fullpage">
+    <button class="nx-fp-close" id="fullpageClose" type="button" aria-label="Close">✕</button>
+    <img id="fullpageImg" src="" alt="">
+  </div>
+
+</section>
+
+<script>
+const NX_IMG_CONNECT = "images/connect.jpg";
+const NX_IMG_ACTIVATE = "images/activate.jpg";
+const NX_IMG_CAPTURE = "images/capture.jpg";
+const NX_IMG_INSIGHTS = "images/insights.jpg";
+const NX_IMG_GEO = "images/geo.jpg";
+const NX_IMG_LEARN = "images/learn.jpg";
+const NX_IMG_STOCKFIX = "images/stockfix.jpg";
+
+const NX_DATA = {
+  connect: {
+    icon: 'ph-broadcast',
+    title: 'Connect',
+    tagline: 'Mobile-first field communication, always on — reps and head office stay in sync in real time.',
+    fullImage: NX_IMG_CONNECT,
+    features: [
+      'Real-time push alerts for schedule changes, urgent tasks &amp; store updates',
+      'Two-way messaging between reps, supervisors &amp; head office',
+      'Automatic sync the moment a rep comes back online'
+    ],
+    mock: { type:'phone', label:'Connect App — Activity Feed', rows:[
+      { icon:'ph-bell', title:'Schedule updated', sub:'Store visit moved to 09:30', pill:'New' },
+      { icon:'ph-chat-circle-text', title:'Message from Supervisor', sub:'“Please confirm POS delivery”', pill:'New' },
+      { icon:'ph-check-circle', title:'Sync complete', sub:'14 visits uploaded', pill:'Done', done:true }
+    ]}
+  },
+  activate: {
+    icon: 'ph-lightning',
+    title: 'Activate',
+    tagline: 'Turn head-office strategy into in-store execution, tracked from brief to shelf.',
+    fullImage: NX_IMG_ACTIVATE,
+    features: [
+      'Build &amp; assign trade campaigns to specific reps, stores or regions',
+      'Step-by-step execution checklists validated at point of visit',
+      'Real-time rollout tracking against campaign targets'
+    ],
+    mock: { type:'kanban', label:'Activate — Campaign Board', columns:[
+      { title:'Planned', cards:['Winter Promo Set-up'] },
+      { title:'Live', cards:['Aisle End Display','Price Ticket Refresh'] },
+      { title:'Complete', cards:['Launch Training'] }
+    ]}
+  },
+  capture: {
+    icon: 'ph-camera',
+    title: 'Capture',
+    tagline: 'Every shelf, verified — photo evidence and compliance scoring at the point of visit.',
+    fullImage: NX_IMG_CAPTURE,
+    features: [
+      'Geo &amp; timestamp-tagged photo capture at every store visit',
+      'Automated compliance scoring against planogram standards',
+      'Before / after gallery for audit-ready evidence'
+    ],
+    mock: { type:'photos', label:'Capture — Compliance Check', photos:[
+      { icon:'ph-image', pill:'Before', done:false },
+      { icon:'ph-image', pill:'After', done:true },
+      { icon:'ph-image', pill:'98% Match', done:true },
+      { icon:'ph-image', pill:'Flagged', done:false }
+    ]}
+  },
+  insights: {
+    icon: 'ph-chart-line-up',
+    title: 'Insights',
+    tagline: 'From field data to boardroom decisions — dashboards that update as the field reports in.',
+    fullImage: NX_IMG_INSIGHTS,
+    features: [
+      'Live dashboards refreshed as reps complete visits',
+      'Drill-down from national trends to store-level detail',
+      'Scheduled exports &amp; client-ready reporting packs'
+    ],
+    mock: { type:'dashboard', label:'Insights — Live Dashboard', kpis:[
+      { val:'93%', lbl:'Compliance' }, { val:'+6.4%', lbl:'SOS Growth' }, { val:'214', lbl:'Visits Today' }
+    ], bars:[40,65,50,80,60,90,70] }
+  },
+  geo: {
+    icon: 'ph-map-pin',
+    title: 'Geo',
+    tagline: 'Coverage you can prove — GPS-verified visits mapped across every route.',
+    fullImage: NX_IMG_GEO,
+    features: [
+      'GPS-verified check-in / check-out at every store',
+      'Route optimisation to cut travel time between visits',
+      'Live coverage maps by rep, region or banner'
+    ],
+    mock: { type:'map', label:'Geo — Coverage Map', pins:[
+      {x:'22%',y:'30%'},{x:'48%',y:'55%'},{x:'68%',y:'28%'},{x:'35%',y:'72%'},{x:'78%',y:'62%'}
+    ]}
+  },
+  learn: {
+    icon: 'ph-graduation-cap',
+    title: 'Learn',
+    tagline: 'Training that travels with the rep — bite-sized modules, quizzes &amp; certifications, built for mobile.',
+    fullImage: NX_IMG_LEARN,
+    features: [
+      'Bite-sized mobile modules reps complete between visits',
+      'Quizzes &amp; certification tracked per rep, store or SKU',
+      'Auto-assigned learning journeys for new launches or products'
+    ],
+    mock: { type:'phone', label:'Learn App — Course Library', rows:[
+      { icon:'ph-play-circle', title:'New SKU Walkthrough', sub:'4 min · Video', pill:'New' },
+      { icon:'ph-exam', title:'Compliance Quiz', sub:'8 questions', pill:'82%', done:true },
+      { icon:'ph-certificate', title:'Category Certification', sub:'Completed 12 Jun', pill:'Done', done:true }
+    ]}
+  },
+  stockfix: {
+    icon: 'ph-package',
+    title: 'StockFix',
+    tagline: 'Stock gaps, found and fixed — automatic detection through to resolution.',
+    fullImage: NX_IMG_STOCKFIX,
+    features: [
+      'Automatic detection of out-of-stock &amp; low-stock SKUs',
+      'Ticketed workflow from flag to resolution',
+      'Root-cause tagging to track recurring problem stores'
+    ],
+    mock: { type:'table', label:'StockFix — Open Tickets', rows:[
+      { icon:'ph-warning', title:'SKU 2201 · Store 048', sub:'Out of stock, 3 days', pill:'Open' },
+      { icon:'ph-clock', title:'SKU 1187 · Store 112', sub:'Low stock, flagged today', pill:'Pending' },
+      { icon:'ph-check-circle', title:'SKU 3390 · Store 007', sub:'Resolved by rep', pill:'Done', done:true }
+    ]}
+  }
+};
+
+const stage = document.getElementById('stage');
+const panel = document.getElementById('panel');
+const bubbles = Array.from(document.querySelectorAll('.nx-bubble'));
+let activeBtn = null;
+
+function mockHTML(m) {
+  if (m.type === 'phone') {
+    return `<div class="nx-mock"><div class="nx-mock-label">${m.label}</div>
+      <div class="nx-phone"><div class="nx-phone-bar"></div>
+        ${m.rows.map(r => `<div class="nx-card-row"><i class="ph ${r.icon}"></i><div class="nx-cr-txt"><div class="nx-cr-title">${r.title}</div><div class="nx-cr-sub">${r.sub}</div></div><span class="nx-pill${r.done?' done':''}">${r.pill}</span></div>`).join('')}
+      </div></div>`;
+  }
+  if (m.type === 'kanban') {
+    return `<div class="nx-mock"><div class="nx-mock-label">${m.label}</div>
+      <div class="nx-kanban">${m.columns.map(c => `<div class="nx-kcol"><div class="nx-kcol-h">${c.title}</div>${c.cards.map(t => `<div class="nx-kcard">${t}</div>`).join('')}</div>`).join('')}</div></div>`;
+  }
+  if (m.type === 'photos') {
+    return `<div class="nx-mock"><div class="nx-mock-label">${m.label}</div>
+      <div class="nx-photogrid">${m.photos.map(p => `<div class="nx-photo"><i class="ph ${p.icon}"></i><span class="nx-pill${p.done?' done':''}">${p.pill}</span></div>`).join('')}</div></div>`;
+  }
+  if (m.type === 'dashboard') {
+    return `<div class="nx-mock"><div class="nx-mock-label">${m.label}</div>
+      <div class="nx-dash-kpis">${m.kpis.map(k => `<div class="nx-kpi"><div class="nx-kpi-val">${k.val}</div><div class="nx-kpi-lbl">${k.lbl}</div></div>`).join('')}</div>
+      <div class="nx-bars">${m.bars.map(h => `<div class="nx-bar" style="height:${h}%"></div>`).join('')}</div></div>`;
+  }
+  if (m.type === 'map') {
+    return `<div class="nx-mock"><div class="nx-mock-label">${m.label}</div>
+      <div class="nx-map">${m.pins.map(p => `<div class="nx-pin" style="left:${p.x}; top:${p.y};"></div>`).join('')}</div></div>`;
+  }
+  if (m.type === 'table') {
+    return `<div class="nx-mock"><div class="nx-mock-label">${m.label}</div>
+      <div class="nx-table">${m.rows.map(r => `<div class="nx-trow"><i class="ph ${r.icon}" style="color:#f59a4b;"></i><div class="nx-cr-txt"><div class="nx-cr-title">${r.title}</div><div class="nx-cr-sub">${r.sub}</div></div><span class="nx-pill${r.done?' done':''}">${r.pill}</span></div>`).join('')}</div></div>`;
+  }
+  return '';
+}
+
+function panelHTML(key) {
+  const d = NX_DATA[key];
+  return `
+    <div class="nx-panel-head">
+      <div class="nx-panel-icon"><i class="ph ${d.icon}"></i></div>
+      <div class="nx-panel-heading">
+        <div class="nx-panel-eyebrow">NEXUS MODULE</div>
+        <div class="nx-panel-title">${d.title}</div>
+        <div class="nx-panel-tagline">${d.tagline}</div>
+      </div>
+      <button class="nx-panel-close" type="button" aria-label="Close"><i class="ph ph-x"></i></button>
+    </div>
+    <div class="nx-panel-rule"></div>
+    <div class="nx-panel-body">
+      <div class="nx-feature-list">
+        ${d.features.map(f => `<div class="nx-feature"><i class="ph ph-check-circle"></i><span>${f}</span></div>`).join('')}
+      </div>
+      ${mockHTML(d.mock)}
+    </div>
+  `;
+}
+
+function stageCenterOffset(btn) {
+  const cx = parseFloat(btn.dataset.cx), cy = parseFloat(btn.dataset.cy);
+  const panelCx = 66 + 788 / 2, panelCy = 64 + 652 / 2;
+  return { dx: cx - panelCx, dy: cy - panelCy };
+}
+
+function openPanel(key, btn) {
+  const { dx, dy } = stageCenterOffset(btn);
+  panel.style.transition = 'none';
+  panel.style.transform = `translate(${dx}px, ${dy}px) scale(.05)`;
+  panel.innerHTML = panelHTML(key);
+  panel.querySelector('.nx-panel-close').addEventListener('click', closePanel);
+
+  stage.classList.add('nx-open');
+  bubbles.forEach(b => b.classList.toggle('nx-source', b === btn));
+  activeBtn = btn;
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      panel.style.transition = 'transform .55s cubic-bezier(.2,.8,.2,1), opacity .3s ease';
+      panel.style.transform = 'translate(0,0) scale(1)';
+      panel.classList.add('nx-visible');
+    });
+  });
+}
+
+function closePanel() {
+  if (!activeBtn) return;
+  const { dx, dy } = stageCenterOffset(activeBtn);
+  panel.style.transition = 'transform .4s cubic-bezier(.4,0,.6,1), opacity .3s ease';
+  panel.style.transform = `translate(${dx}px, ${dy}px) scale(.05)`;
+  panel.classList.remove('nx-visible');
+  stage.classList.remove('nx-open');
+  bubbles.forEach(b => b.classList.remove('nx-source'));
+  activeBtn = null;
+}
+
+const fullpage = document.getElementById('fullpage');
+const fullpageImg = document.getElementById('fullpageImg');
+const fullpageClose = document.getElementById('fullpageClose');
+
+function openFullPage(d) {
+  fullpageImg.src = d.fullImage;
+  fullpageImg.alt = d.title;
+  fullpage.classList.add('nx-fp-visible');
+}
+function closeFullPage() {
+  fullpage.classList.remove('nx-fp-visible');
+}
+fullpageClose.addEventListener('click', closeFullPage);
+fullpage.addEventListener('click', (e) => {
+  if (e.target === fullpage) closeFullPage();
+});
+
+bubbles.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const d = NX_DATA[btn.dataset.key];
+    if (d && d.fullImage) {
+      openFullPage(d);
+    } else {
+      openPanel(btn.dataset.key, btn);
+    }
+  });
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { closePanel(); closeFullPage(); }
+});
+
+stage.addEventListener('click', (e) => {
+  if (stage.classList.contains('nx-open') && e.target === stage) closePanel();
+});
+
+function fitSlide() {
+  const slide = document.querySelector('.nx-slide');
+  const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+  const left = (window.innerWidth - (1920 * scale)) / 2;
+  const top = (window.innerHeight - (1080 * scale)) / 2;
+
+  slide.style.position = 'absolute';
+  slide.style.left = `${left}px`;
+  slide.style.top = `${top}px`;
+  slide.style.transformOrigin = 'top left';
+  slide.style.transform = `scale(${scale})`;
+}
+window.addEventListener('resize', fitSlide);
+window.addEventListener('load', fitSlide);
+fitSlide();
+</script>
+
+</body>
+</html>
